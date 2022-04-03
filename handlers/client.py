@@ -119,9 +119,9 @@ async def get_appeal_type(message: types.Message, state: FSMContext):
                 text = "Введите Ф.И.О лица, делающего предложение и рекомендации"
         elif message_text == "💼 Yuridik shaxs" or message_text == "💼 Юридическое лицо":
             if lang == "uz":
-                text = "Taklif va tavsilayar beruvchi tashkilot nomini kiriting"
+                text = "Taklif va tavsilayar beruvchi tashkilot nomini hamda F.I.Shni kiriting"
             else:
-                text = "Введите название организации, делающей предложение и рекомендации"
+                text = "Введите название организации и Ф.И.О лица, делающей предложение и рекомендации"
         await bot.send_message(chat_id=message.from_user.id, text=text, reply_markup=types.ReplyKeyboardRemove())
         await state.set_state("phone_number")
     elif user_choice == "murojaat":
@@ -132,9 +132,9 @@ async def get_appeal_type(message: types.Message, state: FSMContext):
                 text = "Введите Ф.И.О лица, подающего жалобу и претензии"
         elif message_text == "💼 Yuridik shaxs" or message_text == "💼 Юридическое лицо":
             if lang == "uz":
-                text = "Murojaat va shikoyatlar beruvchi tashkilot nomini kiriting"
+                text = "Murojaat va shikoyatlar beruvchi tashkilot nomini hamda F.I.Shni kiriting"
             else:
-                text = "Введите название организации, подающей жалобу и претензии"
+                text = "Введите название организации и Ф.И.О лица, подающей жалобу и претензии"
         await bot.send_message(chat_id=message.from_user.id, text=text, reply_markup=types.ReplyKeyboardRemove())
         await state.set_state("location")
     else:
@@ -145,9 +145,9 @@ async def get_appeal_type(message: types.Message, state: FSMContext):
                 text = "Введите Ф.И.О"
         elif message_text == "💼 Yuridik shaxs" or message_text == "💼 Юридическое лицо":
             if lang == "uz":
-                text = "Tashkilot nomini kiriting"
+                text = "Tashkilot nomini hamda F.I.Shni kiriting"
             else:
-                text = "Введите название организации"
+                text = "Введите название организации и Ф.И.О лица"
         await bot.send_message(chat_id=message.from_user.id, text=text, reply_markup=types.ReplyKeyboardRemove())
         await state.set_state("location")
 
