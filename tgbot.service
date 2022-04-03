@@ -1,0 +1,14 @@
+[UNIT]
+Description=Anticorruption Sport Telegram Bot
+After=network.target
+
+[Service]
+User=daac
+Group=daac
+
+WorkingDirectory=/home/daac/minsport-bot/
+Environment="PYTHONPATH=/home/daac/minsport-bot/"
+ExecStart=/home/daac/minsport-bot/venv/bin/python /home/daac/minsport-bot/src/local.py
+
+[Install]
+WantedBy=multi-user.target
