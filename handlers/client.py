@@ -90,36 +90,64 @@ async def choose_person_type(message: types.Message, state: FSMContext):
 
 async def get_appeal_type(message: types.Message, state: FSMContext):
     message_text = message.text
+    print(message_text)
     data = await state.get_data()
     lang = data.get("lang")
     user_choice = ''
     choosing = data.get("choose")
     if lang == "uz":
+        print(choosing)
         if choosing == "🖊 Taklif va tavsiyalar yuborish":
             user_choice = "taklif"
         elif choosing == "📩 Murojaat va shikoyatlar yuborish":
             user_choice = "murojaat"
         else:
             user_choice = "boshqa"
-    if user_choice == "taklif":
-        if lang == "uz":
-            text = "Taklif va tavsiyalar beruvchi F.I.Shni kiriting"
+    if lang == 'ru':
+        print(choosing)
+        if choosing == "🖊 Отправить предложения и рекомендации":
+            user_choice = "taklif"
+        elif choosing == "📩 Подать заявку и пожаловаться":
+            user_choice = "murojaat"
         else:
-            text = "Введите Ф.И.О лица, делающего предложение и рекомендации"
+            user_choice = "boshqa"
+    if user_choice == "taklif":
+        if message_text == "👤 Jismoniy shaxs" or message_text == "👤 Физическое лицо":
+            if lang == "uz":
+                text = "Taklif va tavsiyalar beruvchi F.I.Shni kiriting"
+            else:
+                text = "Введите Ф.И.О лица, делающего предложение и рекомендации"
+        elif message_text == "💼 Yuridik shaxs" or message_text == "💼 Юридическое лицо":
+            if lang == "uz":
+                text = "Taklif va tavsilayar beruvchi tashkilot nomini kiriting"
+            else:
+                text = "Введите название организации, делающей предложение и рекомендации"
         await bot.send_message(chat_id=message.from_user.id, text=text, reply_markup=types.ReplyKeyboardRemove())
         await state.set_state("phone_number")
     elif user_choice == "murojaat":
-        if lang == "uz":
-            text = "Murojaat va shikoyatlar beruvchi F.I.Shni kiriting"
-        else:
-            text = "Введите Ф.И.О лица, подающего жалобу и претензии"
+        if message_text == "👤 Jismoniy shaxs" or message_text == "👤 Физическое лицо":
+            if lang == "uz":
+                text = "Murojaat va shikoyatlar beruvchi F.I.Shni kiriting"
+            else:
+                text = "Введите Ф.И.О лица, подающего жалобу и претензии"
+        elif message_text == "💼 Yuridik shaxs" or message_text == "💼 Юридическое лицо":
+            if lang == "uz":
+                text = "Murojaat va shikoyatlar beruvchi tashkilot nomini kiriting"
+            else:
+                text = "Введите название организации, подающей жалобу и претензии"
         await bot.send_message(chat_id=message.from_user.id, text=text, reply_markup=types.ReplyKeyboardRemove())
         await state.set_state("location")
     else:
-        if lang == "uz":
-            text = "F.I.Shni kiriting"
-        else:
-            text = "Введите Ф.И.О"
+        if message_text == "👤 Jismoniy shaxs" or message_text == "👤 Физическое лицо":
+            if lang == "uz":
+                text = "F.I.Shni kiriting"
+            else:
+                text = "Введите Ф.И.О"
+        elif message_text == "💼 Yuridik shaxs" or message_text == "💼 Юридическое лицо":
+            if lang == "uz":
+                text = "Tashkilot nomini kiriting"
+            else:
+                text = "Введите название организации"
         await bot.send_message(chat_id=message.from_user.id, text=text, reply_markup=types.ReplyKeyboardRemove())
         await state.set_state("location")
 
