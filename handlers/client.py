@@ -30,7 +30,7 @@ async def privacy_agree(message: types.Message, state: FSMContext):
                "деятельностью в сфере развития спорта!\n\n<b>Важный!</b> Закон Республики Узбекистан «<b>О персональных данных</b>» " \
                "предусматривает трансграничную передачу данных физических лиц только при наличии согласия физических " \
                "лиц на трансграничную передачу персональных данных.\n\nДля того, чтобы использовать " \
-               "@motach_anticorruption_bot в соответствии с данным законом, " \
+               "@minsport_anticorruption_bot в соответствии с данным законом, " \
                "вы должны дать согласие на использование вашей личной информации. "
     else:
         markup = await agree_keyboard("uz")
@@ -40,7 +40,7 @@ async def privacy_agree(message: types.Message, state: FSMContext):
                "ta’luqli ma’lumotlarini transchegaraviy uzatishga roziligi mavjud bo‘lgan taqdirdagina ma’lumotlarni " \
                "transchegaraviy uzatishning amalga oshirilishi O‘zbekiston Respublikasining  “Shaxsga doir " \
                "ma’lumotlar to‘g‘risida”gi Qonunda nazarda tutilgan. \n\nMazkur qonunga asosan " \
-               "@motach_anticorruption_bot dan foydalanish uchun Sizning " \
+               "@minsport_anticorruption_bot dan foydalanish uchun Sizning " \
                "shaxsingizga doir ma’lumotlaringizdan foydalanishga rozilik bildirishingiz lozim. "
     await bot.send_message(chat_id=user_id, text=text, parse_mode=ParseMode.HTML, reply_markup=markup)
     await state.set_state("choose")
