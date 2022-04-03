@@ -372,8 +372,9 @@ async def finish(message: types.Message, state: FSMContext):
                 message.attach(file)
             else:
                 files = file_name.split("=+=")
-        session = smtplib.SMTP('mail.uzbektourism.uz', 25, 'daac')
-        # session.starttls()
+        session = smtplib.SMTP('smtp.gmail.com', 587)
+        #session = smtplib.SMTP('mail.uzbektourism.uz', 25, 'daac')
+        session.starttls()
         session.login(sender_address, sender_pass)
         text = message.as_string()
         session.sendmail(sender_address, receiver_address, text)
