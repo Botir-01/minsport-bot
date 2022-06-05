@@ -1,0 +1,14 @@
+[UNIT]
+Description=Anticorruption Sport Telegram Bot
+After=network.target
+
+[Service]
+User=minsport
+Group=minsport
+
+WorkingDirectory=/home/minsport/minsport-bot/
+Environment="PYTHONPATH=/home/minsport/minsport-bot/"
+ExecStart=/home/minsport/minsport-bot/venv/bin/python /home/minsport/minsport-bot/src/local.py
+
+[Install]
+WantedBy=multi-user.target
