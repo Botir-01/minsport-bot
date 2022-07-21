@@ -21,3 +21,4 @@ idna==3.3
 multidict==6.0.2
 pytz==2021.3
 yarl==1.7.2
+httpx==0.23.0
