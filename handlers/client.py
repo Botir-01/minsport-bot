@@ -1,7 +1,8 @@
+from httpx import RequestError
+import requests
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
-from keyboards.inline_keyboards import languages_keyboard, agree_keyboard, choose_keyboard, check_person, \
-    cancel_keyboard, confirm_keyboard
+from keyboards.inline_keyboards import *
 from create_bot import dp, bot
 from aiogram.types import ParseMode
 from decouple import config
@@ -90,13 +91,12 @@ async def choose_person_type(message: types.Message, state: FSMContext):
 
 async def get_appeal_type(message: types.Message, state: FSMContext):
     message_text = message.text
-    print(message_text)
+    await state.update_data(user_type=message_text)
     data = await state.get_data()
     lang = data.get("lang")
     user_choice = ''
     choosing = data.get("choose")
     if lang == "uz":
-        print(choosing)
         if choosing == "🖊 Taklif va tavsiyalar yuborish":
             user_choice = "taklif"
         elif choosing == "📩 Murojaat va shikoyatlar yuborish":
@@ -104,7 +104,6 @@ async def get_appeal_type(message: types.Message, state: FSMContext):
         else:
             user_choice = "boshqa"
     if lang == 'ru':
-        print(choosing)
         if choosing == "🖊 Отправить предложения и рекомендации":
             user_choice = "taklif"
         elif choosing == "📩 Подать заявку и пожаловаться":
@@ -179,6 +178,9 @@ async def get_location(message: types.Message, state: FSMContext):
 
 
 async def get_phone_number_two(message: types.Message, state: FSMContext):
+    location = message.text
+    await state.update_data(location=location)
+
     data = await state.get_data()
     lang = data.get("lang")
     address = message.text
@@ -364,6 +366,7 @@ async def cancel_file(message: types.Message, state: FSMContext):
 
 
 async def finish(message: types.Message, state: FSMContext):
+    global choos, user, application_category
     message_text = message.text
     data = await state.get_data()
     body = data.get("body")
@@ -400,10 +403,59 @@ async def finish(message: types.Message, state: FSMContext):
                 message.attach(file)
             else:
                 files = file_name.split("=+=")
-        #session = smtplib.SMTP('smtp.gmail.com', 587)
+
+        data = await state.get_data()
+        lang = data.get("lang")
+        choosing = data.get("choose")
+        user_type = data.get('user_type')
+        if data.get('location') == None:
+            await state.update_data(location='')
+        if lang == "uz":
+            if choosing == "🖊 Taklif va tavsiyalar yuborish":
+                application_category = 1
+            elif choosing == "📩 Murojaat va shikoyatlar yuborish":
+                application_category = 2
+            else:
+                application_category = 3
+
+            if user_type == "👤 Jismoniy shaxs":
+                user = 1
+            else:
+                user = 2
+        if lang == 'ru':
+            if choosing == "🖊 Отправить предложения и рекомендации":
+                application_category = 1
+            elif choosing == "📩 Подать заявку и пожаловаться":
+                application_category = 2
+            else:
+                application_category = 3
+
+            if user_type == "👤 Физическое лицо":
+                user = 1
+            else:
+                user = 2
+
+        AUTH_TOKEN = config('AUTH_TOKEN')
+        BASE_URL = config('BASE_URL')
+        head = {'Authorization': 'token {}'.format(AUTH_TOKEN)}
+        try:
+            response = requests.post(url=f'{BASE_URL}/application/', headers=head, data={
+                'applicant_name': data.get('name'),
+                'phone_number': data.get('phone'),
+                'username': data.get('username'),
+                'location': data.get('location'),
+                'message': data.get('main_text'),
+                'file': data.get('main_file'),
+                'user_type': user,
+                'application_category': application_category,
+            })
+        except RequestError as err:
+            raise err
+
+        # session = smtplib.SMTP('smtp.gmail.com', 587)
         session = smtplib.SMTP('mail.minsport.uz', 25, 'minsport')
-        #session.starttls()
-        session.login(sender_address, sender_pass)
+        # session.starttls()
+        # session.login(sender_address, sender_pass)
         text = message.as_string()
         session.sendmail(sender_address, receiver_address, text)
         session.quit()
@@ -418,6 +470,9 @@ async def finish(message: types.Message, state: FSMContext):
         markup = await cancel_keyboard(lang)
         await bot.send_message(chat_id=message.from_user.id, text=text, reply_markup=markup)
         await state.set_state("main_file")
+        
+        
+    await state.finish()
 
 
 def register_handlers_client(dp: Dispatcher):
